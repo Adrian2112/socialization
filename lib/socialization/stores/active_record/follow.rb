@@ -50,8 +50,8 @@ module Socialization
         def followers_relation(followable, klass, opts = {})
           rel = klass.where(:id =>
             self.select(:follower_id).
-              where(:follower_type => klass.table_name.classify).
-              where(:followable_type => followable.class.to_s).
+              where(:follower_type => klass.base_class).
+              where(:followable_type => followable.class.base_class.to_s).
               where(:followable_id => followable.id)
           )
 
@@ -76,8 +76,8 @@ module Socialization
         def followables_relation(follower, klass, opts = {})
           rel = klass.where(:id =>
             self.select(:followable_id).
-              where(:followable_type => klass.table_name.classify).
-              where(:follower_type => follower.class.to_s).
+              where(:followable_type => klass.base_class).
+              where(:follower_type => follower.class.base_class.to_s).
               where(:follower_id => follower.id)
           )
 
@@ -100,13 +100,13 @@ module Socialization
 
         # Remove all the followers for followable
         def remove_followers(followable)
-          self.where(:followable_type => followable.class.name.classify).
+          self.where(:followable_type => followable.class.base_class).
                where(:followable_id => followable.id).destroy_all
         end
 
         # Remove all the followables for follower
         def remove_followables(follower)
-          self.where(:follower_type => follower.class.name.classify).
+          self.where(:follower_type => follower.class.base_class).
                where(:follower_id => follower.id).destroy_all
         end
 
